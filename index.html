@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Thomas' Dashboard Experiments</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="css/bootstrap-responsive.css" rel="stylesheet">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+  </head>
+  <body>
+	<div class="row">
+		<div class="hero-unit span8 offset2">
+			<h1>Thomas' Stationboard</h1>
+			<p>Damit ich immer rechtzeitig meine Verbindungen erreiche.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div id="transport" class="span8 offset2">
+			<script>
+				$("document").ready(function(){
+					moment.lang('de', {
+						months : "Januar_Februar_März_April_Mai_Juni_Juli_August_September_Oktober_November_Dezember".split("_"),
+						monthsShort : "Jan._Febr._Mrz._Apr._Mai_Jun._Jul._Aug._Sept._Okt._Nov._Dez.".split("_"),
+						weekdays : "Sonntag_Montag_Dienstag_Mittwoch_Donnerstag_Freitag_Samstag".split("_"),
+						weekdaysShort : "So._Mo._Di._Mi._Do._Fr._Sa.".split("_"),
+						weekdaysMin : "So_Mo_Di_Mi_Do_Fr_Sa".split("_"),
+						longDateFormat : {
+							LT: "H:mm U\\hr",
+							L : "DD.MM.YYYY",
+							LL : "D. MMMM YYYY",
+							LLL : "D. MMMM YYYY LT",
+							LLLL : "dddd, D. MMMM YYYY LT"
+						},
+						calendar : {
+							sameDay: "[Heute um] LT",
+							sameElse: "L",
+							nextDay: '[Morgen um] LT',
+							nextWeek: 'dddd [um] LT',
+							lastDay: '[Gestern um] LT',
+							lastWeek: '[letzten] dddd [um] LT'
+						},
+						relativeTime : {
+							future : "in %s",
+							past : "vor %s",
+							s : "ein paar Sekunden",
+							m : "einer Minute",
+							mm : "%d Minuten",
+							h : "einer Stunde",
+							hh : "%d Stunden",
+							d : "einem Tag",
+							dd : "%d Tagen",
+							M : "einem Monat",
+							MM : "%d Monaten",
+							y : "einem Jahr",
+							yy : "%d Jahren"
+						},
+						ordinal : '%d.',
+						week : {
+							dow : 1, // Monday is the first day of the week.
+							doy : 4  // The week that contains Jan 4th is the first week of the year.
+						}
+					});
+					function connections(){
+					$.get("http://transport.opendata.ch/v1/stationboard", {station: "Zürich Triemli", limit: 5}, function(data){
+						$("#transport").empty();
+						$(data.stationboard).each(function(){
+							var connection = "<div class='well well-small'>";
+							var prognosis, departure;
+							departure = moment(this.stop.departure);
+							connection += departure.fromNow() + ": " + this.name + " nach " + this.to + "</div>";
+							$("#transport").append(connection);
+						});
+					}, "json");
+				};
+				connections();
+				setInterval(connections, 1000 * 60);;
+				});
+			</script>
+		</div>
+	</div>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+	<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script> 
+    <script src="js/bootstrap.min.js"></script>
+	<script src="js/moment.js"></script>
+  </body>
+</html>
