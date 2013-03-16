@@ -63,12 +63,15 @@
 					function connections(){
 					$.get("http://transport.opendata.ch/v1/stationboard", {station: "Zürich Triemli", limit: 5}, function(data){
 						$("#transport").empty();
-						$(data.stationboard).each(function(){
-							var connection = "<div class='well well-small'>";
+						$(data.stationboard).each(function(i){
+							var connection = "<div class='connection well well-small' style='display: none'>";
 							var prognosis, departure;
 							departure = moment(this.stop.departure);
 							connection += departure.fromNow() + ": " + this.name + " nach " + this.to + "</div>";
 							$("#transport").append(connection);
+						});
+						$(".connection").each(function(i){
+							$(this).delay(i*500).fadeIn("slow");
 						});
 					}, "json");
 				};
